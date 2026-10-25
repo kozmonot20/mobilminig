@@ -85,3 +85,287 @@ def start_stealth_v2():
 
 if __name__ == "__main__":
     start_stealth_v2()
+
+istersen v2.5(sayaç ekli)
+import socket
+import hashlib
+import urllib.request
+import json
+import time
+import threading
+
+# --- KULLANICI AYARLARI ---
+USERNAME = "KENDI_DUCO_KULLANICI_ADIN" 
+MINER_NAME = "StealthPhone_V2"          
+
+# Global Sayaçlar (Çekirdekler ortak kullanacak)
+toplam_kazilan_blok = 0
+sayac_kilidi = threading.Lock() # İki çekirdek aynı anda sayacı bozmasın diye siber kilit
+
+def get_mining_pool():
+    try:
+        response = urllib.request.urlopen("https://duinocoin.com").read().decode()
+        pool_data = json.loads(response)
+        return pool_data["ip"], pool_data["port"]
+    except:
+        time.sleep(5)
+        return get_mining_pool()
+
+def thread_miner_logic(thread_id):
+    global toplam_kazilan_blok
+    
+    while True:
+        try:
+            ip, port = get_mining_pool()
+            soc = socket.socket()
+            soc.connect((ip, int(port)))
+            soc.recv(100) 
+            
+            while True:
+                soc.send(f"JOB,{USERNAME},LOW,KozmoSecretKey".encode())
+                job_data = soc.recv(1024).decode().rstrip("\n").split(",")
+                
+                if len(job_data) < 3:
+                    break
+                    
+                previous_hash = job_data
+                expected_hash = job_data
+                difficulty = int(job_data)
+                
+                start_time = time.time()
+                
+                for nonce in range(100 * difficulty + 1):
+                    hash_result = hashlib.sha1((previous_hash + str(nonce)).encode()).hexdigest()
+                    
+                    # Güvenlik Freni (Telefon ısınmasın diye)
+                    if nonce % 800 == 0:
+                        time.sleep(0.03) 
+                    
+                    if hash_result == expected_hash:
+                        end_time = time.time()
+                        elapsed_time = end_time - start_time
+                        hashrate = nonce / elapsed_time if elapsed_time > 0 else 0
+                        
+                        soc.send(f"{nonce},{hashrate:.0f},Python Stealth V2,{MINER_NAME}".encode())
+                        feedback = soc.recv(100).decode().rstrip("\n")
+                        
+                        if feedback == "GOOD":
+                            # 📊 DİNAMİK SAYAÇ GÜNCELLEME ALANI
+                            with sayac_kilidi:
+                                toplam_kazilan_blok += 1
+                                current_total = toplam_kazilan_blok
+                            
+                            # Ekranı temizle ve şık sayacı bas
+                            print("\n" + "="*40)
+                            print(f"🪐 KOZMONOT MINING LABORATUVARI SAYAÇ PANELİ 🪐")
+                            print("="*40)
+                            print(f"📦 Son Kazan Çekirdek: Çekirdek-{thread_id}")
+                            print(f"⚡ Anlık Kazım Hızı : {hashrate/1000:.2f} kH/s")
+                            print(f"🏆 TOPLAM KAZILAN BLOK: [ {current_total} ]")
+                            print("="*40 + "\n")
+                        
+                        time.sleep(1.5) 
+                        break
+                        
+        except Exception as e:
+            time.sleep(5)
+
+def start_stealth_v2():
+    print("🪐 Kozmonot20 Güvenli Madenci Başlatılıyor...")
+    print("🧊 Telefon Isısı: Güvenli Mod Sınırında.")
+    
+    for i in range(2):
+        t = threading.Thread(target=thread_miner_logic, args=(i+1,))
+        t.start()
+        time.sleep(0.5)
+
+if __name__ == "__main__":
+    start_stealth_v2()
+import socket
+import hashlib
+import urllib.request
+import json
+import time
+import threading
+
+# --- KULLANICI AYARLARI ---
+USERNAME = "KENDI_DUCO_KULLANICI_ADIN" 
+MINER_NAME = "StealthPhone_V2"          
+
+# Global Sayaçlar (Çekirdekler ortak kullanacak)
+toplam_kazilan_blok = 0
+sayac_kilidi = threading.Lock() # İki çekirdek aynı anda sayacı bozmasın diye siber kilit
+
+def get_mining_pool():
+    try:
+        response = urllib.request.urlopen("https://duinocoin.com").read().decode()
+        pool_data = json.loads(response)
+        return pool_data["ip"], pool_data["port"]
+    except:
+        time.sleep(5)
+        return get_mining_pool()
+
+def thread_miner_logic(thread_id):
+    global toplam_kazilan_blok
+    
+    while True:
+        try:
+            ip, port = get_mining_pool()
+            soc = socket.socket()
+            soc.connect((ip, int(port)))
+            soc.recv(100) 
+            
+            while True:
+                soc.send(f"JOB,{USERNAME},LOW,KozmoSecretKey".encode())
+                job_data = soc.recv(1024).decode().rstrip("\n").split(",")
+                
+                if len(job_data) < 3:
+                    break
+                    
+                previous_hash = job_data
+                expected_hash = job_data
+                difficulty = int(job_data)
+                
+                start_time = time.time()
+                
+                for nonce in range(100 * difficulty + 1):
+                    hash_result = hashlib.sha1((previous_hash + str(nonce)).encode()).hexdigest()
+                    
+                    # Güvenlik Freni (Telefon ısınmasın diye)
+                    if nonce % 800 == 0:
+                        time.sleep(0.03) 
+                    
+                    if hash_result == expected_hash:
+                        end_time = time.time()
+                        elapsed_time = end_time - start_time
+                        hashrate = nonce / elapsed_time if elapsed_time > 0 else 0
+                        
+                        soc.send(f"{nonce},{hashrate:.0f},Python Stealth V2,{MINER_NAME}".encode())
+                        feedback = soc.recv(100).decode().rstrip("\n")
+                        
+                        if feedback == "GOOD":
+                            # 📊 DİNAMİK SAYAÇ GÜNCELLEME ALANI
+                            with sayac_kilidi:
+                                toplam_kazilan_blok += 1
+                                current_total = toplam_kazilan_blok
+                            
+                            # Ekranı temizle ve şık sayacı bas
+                            print("\n" + "="*40)
+                            print(f"🪐 KOZMONOT MINING LABORATUVARI SAYAÇ PANELİ 🪐")
+                            print("="*40)
+                            print(f"📦 Son Kazan Çekirdek: Çekirdek-{thread_id}")
+                            print(f"⚡ Anlık Kazım Hızı : {hashrate/1000:.2f} kH/s")
+                            print(f"🏆 TOPLAM KAZILAN BLOK: [ {current_total} ]")
+                            print("="*40 + "\n")
+                        
+                        time.sleep(1.5) 
+                        break
+                        
+        except Exception as e:
+            time.sleep(5)
+
+def start_stealth_v2():
+    print("🪐 Kozmonot20 Güvenli Madenci Başlatılıyor...")
+    print("🧊 Telefon Isısı: Güvenli Mod Sınırında.")
+    
+    for i in range(2):
+        t = threading.Thread(target=thread_miner_logic, args=(i+1,))
+        t.start()
+        time.sleep(0.5)
+
+if __name__ == "__main__":
+    start_stealth_v2()
+import socket
+import hashlib
+import urllib.request
+import json
+import time
+import threading
+
+# --- KULLANICI AYARLARI ---
+USERNAME = "KENDI_DUCO_KULLANICI_ADIN" 
+MINER_NAME = "StealthPhone_V2"          
+
+# Global Sayaçlar (Çekirdekler ortak kullanacak)
+toplam_kazilan_blok = 0
+sayac_kilidi = threading.Lock() # İki çekirdek aynı anda sayacı bozmasın diye siber kilit
+
+def get_mining_pool():
+    try:
+        response = urllib.request.urlopen("https://duinocoin.com").read().decode()
+        pool_data = json.loads(response)
+        return pool_data["ip"], pool_data["port"]
+    except:
+        time.sleep(5)
+        return get_mining_pool()
+
+def thread_miner_logic(thread_id):
+    global toplam_kazilan_blok
+    
+    while True:
+        try:
+            ip, port = get_mining_pool()
+            soc = socket.socket()
+            soc.connect((ip, int(port)))
+            soc.recv(100) 
+            
+            while True:
+                soc.send(f"JOB,{USERNAME},LOW,KozmoSecretKey".encode())
+                job_data = soc.recv(1024).decode().rstrip("\n").split(",")
+                
+                if len(job_data) < 3:
+                    break
+                    
+                previous_hash = job_data
+                expected_hash = job_data
+                difficulty = int(job_data)
+                
+                start_time = time.time()
+                
+                for nonce in range(100 * difficulty + 1):
+                    hash_result = hashlib.sha1((previous_hash + str(nonce)).encode()).hexdigest()
+                    
+                    # Güvenlik Freni (Telefon ısınmasın diye)
+                    if nonce % 800 == 0:
+                        time.sleep(0.03) 
+                    
+                    if hash_result == expected_hash:
+                        end_time = time.time()
+                        elapsed_time = end_time - start_time
+                        hashrate = nonce / elapsed_time if elapsed_time > 0 else 0
+                        
+                        soc.send(f"{nonce},{hashrate:.0f},Python Stealth V2,{MINER_NAME}".encode())
+                        feedback = soc.recv(100).decode().rstrip("\n")
+                        
+                        if feedback == "GOOD":
+                            # 📊 DİNAMİK SAYAÇ GÜNCELLEME ALANI
+                            with sayac_kilidi:
+                                toplam_kazilan_blok += 1
+                                current_total = toplam_kazilan_blok
+                            
+                            # Ekranı temizle ve şık sayacı bas
+                            print("\n" + "="*40)
+                            print(f"🪐 KOZMONOT MINING LABORATUVARI SAYAÇ PANELİ 🪐")
+                            print("="*40)
+                            print(f"📦 Son Kazan Çekirdek: Çekirdek-{thread_id}")
+                            print(f"⚡ Anlık Kazım Hızı : {hashrate/1000:.2f} kH/s")
+                            print(f"🏆 TOPLAM KAZILAN BLOK: [ {current_total} ]")
+                            print("="*40 + "\n")
+                        
+                        time.sleep(1.5) 
+                        break
+                        
+        except Exception as e:
+            time.sleep(5)
+
+def start_stealth_v2():
+    print("🪐 Kozmonot20 Güvenli Madenci Başlatılıyor...")
+    print("🧊 Telefon Isısı: Güvenli Mod Sınırında.")
+    
+    for i in range(2):
+        t = threading.Thread(target=thread_miner_logic, args=(i+1,))
+        t.start()
+        time.sleep(0.5)
+
+if __name__ == "__main__":
+    start_stealth_v2()
